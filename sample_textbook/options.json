@@ -1,0 +1,17 @@
+{
+  "metadata": {
+    "title": "Sample Subject Units 1 & 2",
+    "authors": ["William Herring", "John Doe"],
+    "description": "A sample textbook designed for those undertaking Sample Subject Units 1 & 2."
+  },
+  "book": {
+    "cover": {
+      "style": "standard",
+      "theme": "blue"
+    },
+    "page_numbers": {
+      "book/pre-content.md": "roman",
+      "book/chapters": "numerical"
+    }
+  }
+}
