@@ -1,3 +1,5 @@
+import json
+
 import typer
 import sys
 import os
@@ -22,13 +24,25 @@ def common(
     pass
 
 @app.command()
-def build(outdir: str = __name__):
+def build(outdir: str = os.getcwd() + '/out'):
     """
     Build HTML and PDF textbook
     :param outdir:
     :return:
     """
-    pass
+    options = {}
+
+    try:
+        with open('options.json', 'r') as file:
+            options = json.load(file)
+            print(options)
+    except FileNotFoundError:
+        try:
+            with open('options.xml', 'r') as file:
+                pass
+        except FileNotFoundError:
+            raise Exception('Cannot locate options file. Ensure the command is executed from the project directory.')
+
 
 @app.command()
 def create(name: str):
