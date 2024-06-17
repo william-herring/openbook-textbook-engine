@@ -1,9 +1,13 @@
 import typer
 import sys
 import os
+import shutil
+from pathlib import Path
 
 app = typer.Typer()
 __version__ = "0.1.0"
+SAMPLE_DIR = str(Path(__file__).parent.parent.resolve()) + '/sample_textbook'
+
 
 def version_callback(value: bool):
     if value:
@@ -28,7 +32,14 @@ def build(outdir: str = __name__):
 
 @app.command()
 def create(name: str):
-    pass
+    """
+    Initialise a new book directory
+    :param name:
+    :return:
+    """
+    current_dir = os.getcwd()
+    shutil.copytree(SAMPLE_DIR, f'{current_dir}/{name}')
+
 
 if __name__ == "__main__":
     app()
