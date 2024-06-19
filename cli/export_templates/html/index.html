@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>[title]</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: row;
+            width: 100vw;
+            height: 50vw;
+            justify-content: center;
+            align-items: center;
+        }
+        .page {
+            margin-left: 25px;
+            margin-right: 25px;
+            height: 100%;
+            width: 400px;
+            padding: 40px;
+        }
+    </style>
+    <script>
+        let pages = ['<div><h1>This is a demo page</h1><h2>Lorem ipsum</h2><p>Testing testing</p></div>', '<div><h1>This is an empty page</h1></div>'];
+        currentPage = 0;
+        function nextPage() {
+            currentPage++;
+            document.getElementById('page-content').innerHTML = pages[currentPage];
+        }
+        function previousPage() {
+            currentPage--;
+            document.getElementById('page-content').innerHTML = pages[currentPage];
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <button onclick="previousPage()">Previous</button>
+        <div id="page-content" class="page">
+            <div><h1>This is a demo page</h1><h2>Lorem ipsum</h2><p>Testing testing</p></div>
+        </div>
+        <button onclick="nextPage()">Next</button>
+    </div>
+</body>
+</html>
