@@ -10,8 +10,7 @@
       "theme": "blue"
     },
     "page_numbers": {
-      "book/pre-content.md": "roman",
-      "book/chapters": "numerical"
+      "book/pre-content.md": "roman"
     }
   }
 }

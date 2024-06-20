@@ -6,6 +6,8 @@ import os
 import shutil
 from pathlib import Path
 
+from exports import build_html, build_pdf
+
 app = typer.Typer()
 __version__ = "0.1.0"
 SAMPLE_DIR = str(Path(__file__).parent.parent.resolve()) + '/sample_textbook'
@@ -30,12 +32,11 @@ def build(outdir: str = os.getcwd() + '/out'):
     :param outdir:
     :return:
     """
-    options = {}
 
     try:
         with open('options.json', 'r') as file:
             options = json.load(file)
-            print(options)
+            build_html(options, os.getcwd(), outdir)
     except FileNotFoundError:
         try:
             with open('options.xml', 'r') as file:
