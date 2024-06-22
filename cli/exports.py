@@ -3,6 +3,7 @@ import re
 import markdown
 from os import listdir
 from os.path import isfile, join
+import shutil
 
 
 def build_pdf(html_file, outdir):
@@ -24,6 +25,7 @@ def build_html(options, workingdir, outdir):
     pages_numbers_options = options['book']['page_numbers']
     book = workingdir + '/book'
     templates_path = str(Path(__file__).parent.resolve()) + '/export_templates'
+    pages_html = []
 
     page_index = 000
     page_number = 1
@@ -37,13 +39,16 @@ def build_html(options, workingdir, outdir):
             out = open(outdir + f'/html/{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
                 roman_numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
-                out.write(
-                    f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}</div><div style='position: fixed; bottom: 0; right: 0; margin-right: 20px;'><p>{roman_numerals[page_index]}</p></div></body></html>")
+                p = f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}</div><div class='page-number'><p>{roman_numerals[page_index]}</p></div></body></html>"
+                pages_html.append(p)
+                out.write(p)
             elif pages_numbers_options['book/' + 'pre-content.md'] == 'numerical':
-                out.write(
-                    f"<html><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_index + 1}</p></div></div></body></html>")
+                p = f"<html><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_index + 1}</p></div></div></body></html>"
+                pages_html.append(p)
+                out.write(p)
                 page_number += 1
             page_index += 1
+    file.close()
 
     # Chapters
     chapter_files = [f for f in listdir(book + '/chapters') if
@@ -57,9 +62,22 @@ def build_html(options, workingdir, outdir):
                 html = replace_embeds(html)
 
                 out = open(outdir + f'/html/{page_index}.html', 'w')
-                out.write(
-                    f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>")
+                p = f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
+                pages_html.append(p)
+                out.write(p)
                 page_index += 1
                 page_number += 1
+            file.close()
 
     # Book reader
+    shutil.copyfile(templates_path + '/html/index.html', outdir + '/html/index.html')
+    with open(outdir + '/html/index.html', 'r+') as file:
+        content = file.read()
+        file.seek(0)
+        content = content.replace('[title]', title)
+        content = content.replace('[styles_path]', f'{templates_path}/css/standard.css')
+        content = content.replace('[current_page]', pages_html[0])
+        content = content.replace('[pages]', str(pages_html))
+        file.write(content)
+        file.truncate()
+        file.close()
