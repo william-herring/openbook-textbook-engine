@@ -1,9 +1,10 @@
 from pathlib import Path
 import re
 import markdown
-from os import listdir
+from os import listdir, remove
 from os.path import isfile, join
 import shutil
+import glob
 
 
 def build_pdf(html_file, outdir):
@@ -27,7 +28,12 @@ def build_html(options, workingdir, outdir):
     templates_path = str(Path(__file__).parent.resolve()) + '/export_templates'
     pages_html = []
 
-    page_index = 000
+    # Delete existing build
+    files = glob.glob(outdir + '/html/*')
+    for f in files:
+        remove(f)
+
+    page_index = 0
     page_number = 1
     # Pre-content
     with open(book + '/pre-content.md', 'r') as file:
