@@ -13,7 +13,7 @@ def build_pdf(html_file, outdir):
 
 def build_html(options, workingdir, outdir):
     # Check embeds
-    def replace_embeds(html_in):
+    def replace_embeds(html_in: str):
         embed_pattern = re.compile(r"\[\[embed\([^)]*\)\]\]", re.IGNORECASE)
         html_out = html_in
         for e in re.findall(embed_pattern, html_out):
@@ -22,11 +22,17 @@ def build_html(options, workingdir, outdir):
 
         return html_out
 
+    def find_questions(html_in: str):
+        question_symbol = "[[question]]"
+        answer_pattern = re.compile(r"\[\[answers\(.*\)\]\]", re.IGNORECASE)
+        questions_map = {}
+
     title = options['metadata']['title']
     pages_numbers_options = options['book']['page_numbers']
     book = workingdir + '/book'
     templates_path = str(Path(__file__).parent.resolve()) + '/export_templates'
     pages_html = []
+    questions = {}
 
     # Delete existing build
     files = glob.glob(outdir + '/html/*')
