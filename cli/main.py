@@ -34,12 +34,13 @@ def build(outdir: str = os.getcwd() + '/out'):
     """
 
     try:
-        with open('options.json', 'r') as file:
+        with open(os.getcwd() + '/options.json', 'r') as file:
             options = json.load(file)
             build_html(options, os.getcwd(), outdir)
+            return
     except FileNotFoundError:
         try:
-            with open('options.xml', 'r') as file:
+            with open(os.getcwd() + '/options.xml', 'r') as file:
                 pass
         except FileNotFoundError:
             raise Exception('Cannot locate options file. Ensure the command is executed from the project directory.')

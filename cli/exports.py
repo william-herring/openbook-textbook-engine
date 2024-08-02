@@ -42,7 +42,7 @@ def build_html(options, workingdir, outdir):
             html = markdown.markdown(page, output_format='html')
             html = replace_embeds(html)
 
-            out = open(outdir + f'/html/{page_index}.html', 'w')
+            out = open(outdir + f'/html/{page_index}.html', 'w+')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
                 roman_numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
                 p = f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}</div><div class='page-number'><p>{roman_numerals[page_index]}</p></div></body></html>"
@@ -77,7 +77,7 @@ def build_html(options, workingdir, outdir):
 
     # Book reader
     shutil.copyfile(templates_path + '/html/index.html', outdir + '/html/index.html')
-    with open(outdir + '/html/index.html', 'r+') as file:
+    with open(outdir + '/html/index.html', 'w+') as file:
         content = file.read()
         file.seek(0)
         content = content.replace('[title]', title)
