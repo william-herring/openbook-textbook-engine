@@ -6,8 +6,7 @@
   },
   "book": {
     "cover": {
-      "style": "standard",
-      "theme": "blue"
+      "cover-colour": "#FFE700"
     },
     "page_numbers": {
       "book/pre-content.md": "roman"

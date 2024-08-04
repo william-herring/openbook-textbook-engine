@@ -20,8 +20,7 @@ Any textbook repository can be accessed from the Openbook site
   },
   "book": {
     "cover": {
-      "style": "standard",
-      "theme": "yellow"
+      "cover-colour": "#FFE700"
     },
     "page_numbers": {
       "book/pre-content.md": "roman",

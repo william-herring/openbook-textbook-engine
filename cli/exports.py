@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 import re
 import markdown
@@ -22,10 +23,20 @@ def build_html(options, workingdir, outdir):
 
         return html_out
 
-    def find_questions(html_in: str):
+    def find_questions(md_in: str):
         question_symbol = "[[question]]"
         answer_pattern = re.compile(r"\[\[answers\(.*\)\]\]", re.IGNORECASE)
         questions_map = {}
+        rest = md_in
+
+        while rest.find(question_symbol) != -1:
+            start_question = rest.find(question_symbol) + 12
+            answer_match = re.search(answer_pattern, rest)
+            end_question = answer_match.start()
+
+            questions_map[rest[start_question:end_question]] = ['answer']
+
+            rest = rest[answer_match.end() + 1:]
 
     title = options['metadata']['title']
     pages_numbers_options = options['book']['page_numbers']
@@ -39,6 +50,7 @@ def build_html(options, workingdir, outdir):
     for f in files:
         remove(f)
 
+    chapters = []
     page_index = 0
     page_number = 1
     # Pre-content
@@ -47,6 +59,9 @@ def build_html(options, workingdir, outdir):
         for page in pages:
             html = markdown.markdown(page, output_format='html')
             html = replace_embeds(html)
+
+            for header in re.findall(r'(?<=(^#)\s).*', page):
+                chapters.append((header, page_index))
 
             out = open(outdir + f'/html/{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
@@ -70,8 +85,12 @@ def build_html(options, workingdir, outdir):
         with open(book + '/chapters/' + chapter) as file:
             pages = file.read().split("[[pg]]")
             for page in pages:
+                find_questions(page)
                 html = markdown.markdown(page, output_format='html')
                 html = replace_embeds(html)
+
+                for header in re.findall(r'(?<=(^#)\s).*', page):
+                    chapters.append((header, page_index))
 
                 out = open(outdir + f'/html/{page_index}.html', 'w')
                 p = f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
@@ -92,4 +111,13 @@ def build_html(options, workingdir, outdir):
         content = content.replace('[pages]', str(pages_html))
         file.write(content)
         file.truncate()
+        file.close()
+
+    with open(outdir + '/data.json', 'w') as file:
+        data = {
+            'pages': page_number,
+            'chapters': chapters,
+            'questions': None
+        }
+        file.write(json.dumps(data))
         file.close()
