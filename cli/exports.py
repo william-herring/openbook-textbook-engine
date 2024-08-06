@@ -60,7 +60,7 @@ def build_html(options, workingdir, outdir):
             html = markdown.markdown(page, output_format='html')
             html = replace_embeds(html)
 
-            for header in re.findall(r'^(#{1,6}\s*.+)', page):
+            for header in re.findall(r'#{1,6}\s*.+', page):
                 chapters.append((header, page_number))
 
             out = open(outdir + f'/html/{page_index}.html', 'w')
@@ -89,7 +89,7 @@ def build_html(options, workingdir, outdir):
                 html = markdown.markdown(page, output_format='html')
                 html = replace_embeds(html)
 
-                for header in re.findall(r'^(#{1,6}\s*.+)', page):
+                for header in re.findall(r'#{1,6}\s*.+', page):
                     chapters.append((header, page_number))
 
                 out = open(outdir + f'/html/{page_index}.html', 'w')
