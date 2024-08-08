@@ -58,7 +58,7 @@ def build_html(options, workingdir, outdir):
             html = replace_embeds(html)
 
             for header in re.findall(r'#{1,6}\s*.+', page):
-                chapters.append((header, page_index))
+                chapters.append((header, page_number))
 
             out = open(outdir + f'/html/{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
@@ -87,7 +87,7 @@ def build_html(options, workingdir, outdir):
                 html = replace_embeds(html)
 
                 for header in re.findall(r'#{1,6}\s*.+', page):
-                    chapters.append((header, page_index))
+                    chapters.append((header, page_number))
 
                 out = open(outdir + f'/html/{page_index}.html', 'w')
                 p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
