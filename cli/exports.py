@@ -8,10 +8,6 @@ import shutil
 import glob
 
 
-def build_pdf(html_file, outdir):
-    pass
-
-
 def build_html(options, workingdir, outdir):
     # Check embeds
     def replace_embeds(html_in: str):
@@ -42,6 +38,7 @@ def build_html(options, workingdir, outdir):
     pages_numbers_options = options['book']['page_numbers']
     book = workingdir + '/book'
     templates_path = str(Path(__file__).parent.resolve()) + '/export_templates'
+    styles = open(templates_path + '/css/standard.css', 'r').read()
     pages_html = []
     questions = {}
 
@@ -66,7 +63,7 @@ def build_html(options, workingdir, outdir):
             out = open(outdir + f'/html/{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
                 roman_numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
-                p = f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}</div><div class='page-number'><p>{roman_numerals[page_index]}</p></div></body></html>"
+                p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}</div><div class='page-number'><p>{roman_numerals[page_index]}</p></div></body></html>"
                 pages_html.append(p)
                 out.write(p)
             elif pages_numbers_options['book/' + 'pre-content.md'] == 'numerical':
@@ -93,7 +90,7 @@ def build_html(options, workingdir, outdir):
                     chapters.append((header, page_index))
 
                 out = open(outdir + f'/html/{page_index}.html', 'w')
-                p = f"<html><link rel='stylesheet' href='{templates_path}/css/standard.css'><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
+                p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
                 pages_html.append(p)
                 out.write(p)
                 page_index += 1

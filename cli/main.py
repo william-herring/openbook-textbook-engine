@@ -1,12 +1,11 @@
 import json
 
 import typer
-import sys
 import os
 import shutil
 from pathlib import Path
 
-from exports import build_html, build_pdf
+from exports import build_html
 
 app = typer.Typer()
 __version__ = "0.1.0"

@@ -6,7 +6,7 @@
   },
   "book": {
     "cover": {
-      "cover-colour": "#FFE700"
+      "cover-colour": "default"
     },
     "page_numbers": {
       "book/pre-content.md": "roman"
