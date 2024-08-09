@@ -40,6 +40,7 @@ def build_html(options, workingdir, outdir):
     templates_path = str(Path(__file__).parent.resolve()) + '/export_templates'
     styles = open(templates_path + '/css/standard.css', 'r').read()
     pages_html = []
+    roman_numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
     questions = {}
 
     # Delete existing build
@@ -58,11 +59,10 @@ def build_html(options, workingdir, outdir):
             html = replace_embeds(html)
 
             for header in re.findall(r'#{1,6}\s*.+', page):
-                chapters.append((header, page_number))
+                chapters.append((header, roman_numerals[page_index] if pages_numbers_options['book/' + 'pre-content.md'] == 'roman' else str(page_number), page_number))
 
             out = open(outdir + f'/html/{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
-                roman_numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
                 p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}</div><div class='page-number'><p>{roman_numerals[page_index]}</p></div></body></html>"
                 pages_html.append(p)
                 out.write(p)
@@ -87,7 +87,7 @@ def build_html(options, workingdir, outdir):
                 html = replace_embeds(html)
 
                 for header in re.findall(r'#{1,6}\s*.+', page):
-                    chapters.append((header, page_number))
+                    chapters.append((header, str(page_number), page_number))
 
                 out = open(outdir + f'/html/{page_index}.html', 'w')
                 p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
