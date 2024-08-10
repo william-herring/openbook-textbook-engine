@@ -67,7 +67,7 @@ def build_html(options, workingdir, outdir):
                 pages_html.append(p)
                 out.write(p)
             elif pages_numbers_options['book/' + 'pre-content.md'] == 'numerical':
-                p = f"<html><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_index + 1}</p></div></div></body></html>"
+                p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_index + 1}</p></div></div></body></html>"
                 pages_html.append(p)
                 out.write(p)
                 page_number += 1
@@ -97,18 +97,30 @@ def build_html(options, workingdir, outdir):
                 page_number += 1
             file.close()
 
-    # Book reader
+    # Book reader and PDF template
     shutil.copyfile(templates_path + '/html/index.html', outdir + '/html/index.html')
-    with open(outdir + '/html/index.html', 'r+') as file:
-        content = file.read()
-        file.seek(0)
-        content = content.replace('[title]', title)
-        content = content.replace('[styles_path]', f'{templates_path}/css/standard.css')
-        content = content.replace('[current_page]', pages_html[0])
-        content = content.replace('[pages]', str(pages_html))
-        file.write(content)
-        file.truncate()
-        file.close()
+    shutil.copyfile(templates_path + '/html/pdftemplate.html', outdir + '/html/pdftemplate.html')
+    with open(outdir + '/html/index.html', 'r+') as f1, open(outdir + '/html/pdftemplate.html', 'r+') as f2:
+        content1 = f1.read()
+        f1.seek(0)
+        content1 = content1.replace('[title]', title)
+        content1 = content1.replace('[styles_path]', f'{templates_path}/css/standard.css')
+        content1 = content1.replace('[current_page]', pages_html[0])
+        content1 = content1.replace('[pages]', str(pages_html))
+        f1.write(content1)
+        f1.truncate()
+        f1.close()
+
+        content2 = f2.read()
+        f2.seek(0)
+        to_write = ''
+        for p in pages_html:
+            selected_html = p.split('<body>')[1][:-14]
+            to_write += selected_html
+        content2 = content2.replace('[content]', to_write)
+        f2.write(content2)
+        f2.truncate()
+        f2.close()
 
     with open(outdir + '/data.json', 'w') as file:
         data = {
