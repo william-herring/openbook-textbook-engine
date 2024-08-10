@@ -63,7 +63,7 @@ def build_html(options, workingdir, outdir):
 
             out = open(outdir + f'/html/{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
-                p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}</div><div class='page-number'><p>{roman_numerals[page_index]}</p></div></body></html>"
+                p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{roman_numerals[page_index]}</p></div></div></body></html>"
                 pages_html.append(p)
                 out.write(p)
             elif pages_numbers_options['book/' + 'pre-content.md'] == 'numerical':
