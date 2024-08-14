@@ -25,7 +25,6 @@ def build_html(options, workingdir, outdir):
         md_out = md_in
 
         for q in re.findall(question_pattern, md_in):
-            print(q)
             answers = [a.strip().replace('"', '').replace("'", '') for a in q.split('[[answers(')[1][:-3].split(',')]
             question = q.split('[[question]]')[1].split('[[answers')[0]
             md_out = md_out.replace(q, question)
