@@ -1,0 +1,9 @@
+# Special Keywords
+There are a few special keywords that can be used to include specific textbook
+features. These are used inside double square brackets ( [[]] ).
+
+| Keyword                     | Description                            | Example                                                     | Notes                                                                                                                                                                  |
+|-----------------------------|----------------------------------------|-------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `[[pg]]`                    | Page break                             | `[[pg]]`                                                    |                                                                                                                                                                        |
+| `[[embed()]]`               | Create an HTML embed (e.g. a YouTube video) | `[[embed("https://www.youtube.com/embed/CrMAy18VRg4")]]`    |                                                                                                                                                                        |
+| `[[question]][[answers()]]` | Mark interactive questions             | `[[question]]2 + 3 = ______[[answers("5", "five", "Five")]]` | When formatting maths questions, it is recommended that you use a LATEX image API. E.g. `[[question]]<img src="https://math.now.sh?from=25\times4">[[answers("100")]]` |
