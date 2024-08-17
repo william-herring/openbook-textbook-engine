@@ -34,15 +34,15 @@ def build_html(options, workingdir, outdir):
 
     title = options['metadata']['title']
     pages_numbers_options = options['book']['page_numbers']
-    book = workingdir + '/book'
-    templates_path = str(Path(__file__).parent.resolve()) + '/export_templates'
-    styles = open(templates_path + '/css/standard.css', 'r').read()
+    book = workingdir / 'book'
+    templates_path = Path(__file__).parent.resolve() / 'export_templates'
+    styles = open(templates_path / 'css' / 'standard.css', 'r').read()
     pages_html = []
     roman_numerals = ['i', 'ii', 'iii', 'iv', 'v', 'vi', 'vii', 'viii', 'ix', 'x']
     questions = {}
 
     # Delete existing build
-    files = glob.glob(outdir + '/html/*')
+    files = Path(outdir + '/html').glob('*.html')
     for f in files:
         remove(f)
 
@@ -50,7 +50,7 @@ def build_html(options, workingdir, outdir):
     page_index = 0
     page_number = 1
     # Pre-content
-    with open(book + '/pre-content.md', 'r') as file:
+    with open(book / 'pre-content.md', 'r') as file:
         pages = file.read().split("[[pg]]")
         for page in pages:
             html = markdown.markdown(page, output_format='html')
@@ -59,7 +59,7 @@ def build_html(options, workingdir, outdir):
             for header in re.findall(r'#{1,6}\s*.+', page):
                 chapters.append((header, roman_numerals[page_index] if pages_numbers_options['book/' + 'pre-content.md'] == 'roman' else str(page_number), page_index))
 
-            out = open(outdir + f'/html/{page_index}.html', 'w')
+            out = open(Path(outdir) / 'html' / f'{page_index}.html', 'w')
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
                 p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{roman_numerals[page_index]}</p></div></div></body></html>"
                 pages_html.append(p)
@@ -73,11 +73,11 @@ def build_html(options, workingdir, outdir):
     file.close()
 
     # Chapters
-    chapter_files = [f for f in listdir(book + '/chapters') if
-                     isfile(join(book + '/chapters', f))]
+    chapter_files = [f for f in listdir(book / 'chapters') if
+                     isfile(join(book / 'chapters', f))]
     chapter_files = [i for i in chapter_files if i.endswith('.md')]
     for chapter in chapter_files:
-        with open(book + '/chapters/' + chapter) as file:
+        with open(book / 'chapters' / chapter) as file:
             pages = file.read().split("[[pg]]")
             for page in pages:
                 processed_questions = find_questions(page)
@@ -88,7 +88,7 @@ def build_html(options, workingdir, outdir):
                 for header in re.findall(r'#{1,6}\s*.+', page):
                     chapters.append((header, str(page_number), page_index))
 
-                out = open(outdir + f'/html/{page_index}.html', 'w')
+                out = open(Path(outdir) / 'html' / f'{page_index}.html', 'w')
                 p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{page_number}</p></div></div></body></html>"
                 pages_html.append(p)
                 out.write(p)
@@ -97,13 +97,13 @@ def build_html(options, workingdir, outdir):
             file.close()
 
     # Book reader and PDF template
-    shutil.copyfile(templates_path + '/html/index.html', outdir + '/html/index.html')
-    shutil.copyfile(templates_path + '/html/pdftemplate.html', outdir + '/html/pdftemplate.html')
-    with open(outdir + '/html/index.html', 'r+') as f1, open(outdir + '/html/pdftemplate.html', 'r+') as f2:
+    shutil.copyfile(templates_path / 'html' / 'index.html', Path(outdir) / 'html' / 'index.html')
+    shutil.copyfile(templates_path / 'html' / 'pdftemplate.html', Path(outdir) / 'html' / 'pdftemplate.html')
+    with open(Path(outdir) / 'html' / 'index.html', 'r+') as f1, open(Path(outdir) / 'html' / 'pdftemplate.html', 'r+') as f2:
         content1 = f1.read()
         f1.seek(0)
         content1 = content1.replace('[title]', title)
-        content1 = content1.replace('[styles_path]', f'{templates_path}/css/standard.css')
+        content1 = content1.replace('[styles_path]', str(Path(f'{templates_path}/css/standard.css').resolve()))
         content1 = content1.replace('[current_page]', pages_html[0])
         content1 = content1.replace('[pages]', str(pages_html))
         f1.write(content1)
@@ -121,7 +121,7 @@ def build_html(options, workingdir, outdir):
         f2.truncate()
         f2.close()
 
-    with open(outdir + '/data.json', 'w') as file:
+    with open(Path(outdir) / 'data.json', 'w') as file:
         data = {
             'pages': page_number,
             'chapters': chapters,

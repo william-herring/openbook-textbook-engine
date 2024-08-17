@@ -9,7 +9,7 @@ from exports import build_html
 
 app = typer.Typer()
 __version__ = "0.1.0"
-SAMPLE_DIR = str(Path(__file__).parent.parent.resolve()) + '/sample_textbook'
+SAMPLE_DIR = Path(__file__).parent.parent.resolve() / 'sample_textbook'
 
 
 def version_callback(value: bool):
@@ -17,15 +17,17 @@ def version_callback(value: bool):
         print(__version__)
         raise typer.Exit()
 
+
 @app.callback()
 def common(
-    ctx: typer.Context,
-    version: bool = typer.Option(None, "--version", callback=version_callback),
+        ctx: typer.Context,
+        version: bool = typer.Option(None, "--version", callback=version_callback),
 ):
     pass
 
+
 @app.command()
-def build(outdir: str = os.getcwd() + '/out'):
+def build(outdir=Path(os.getcwd()) / 'out'):
     """
     Build HTML and PDF textbook
     :param outdir:
@@ -33,13 +35,13 @@ def build(outdir: str = os.getcwd() + '/out'):
     """
 
     try:
-        with open(os.getcwd() + '/options.json', 'r') as file:
+        with open(Path(os.getcwd()) / 'options.json', 'r') as file:
             options = json.load(file)
-            build_html(options, os.getcwd(), outdir)
+            build_html(options, Path(os.getcwd()), outdir)
             return
     except FileNotFoundError:
         try:
-            with open(os.getcwd() + '/options.xml', 'r') as file:
+            with open(Path(os.getcwd()) / 'options.xml', 'r') as file:
                 pass
         except FileNotFoundError:
             raise Exception('Cannot locate options file. Ensure the command is executed from the project directory.')
@@ -53,7 +55,7 @@ def create(name: str):
     :return:
     """
     current_dir = os.getcwd()
-    shutil.copytree(SAMPLE_DIR, f'{current_dir}/{name}')
+    shutil.copytree(SAMPLE_DIR, Path(current_dir) / name)
 
 
 if __name__ == "__main__":
