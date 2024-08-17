@@ -5,11 +5,11 @@ import os
 import shutil
 from pathlib import Path
 
-from exports import build_html
+from .exports import build_html
 
 app = typer.Typer()
-__version__ = "0.1.0"
-SAMPLE_DIR = Path(__file__).parent.parent.resolve() / 'sample_textbook'
+__version__ = "0.1.1"
+SAMPLE_DIR = Path(__file__).parent.resolve() / 'sample_textbook'
 
 
 def version_callback(value: bool):
