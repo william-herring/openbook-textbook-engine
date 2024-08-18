@@ -8,7 +8,7 @@ from pathlib import Path
 from .exports import build_html
 
 app = typer.Typer()
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 SAMPLE_DIR = Path(__file__).parent.resolve() / 'sample_textbook'
 
 
