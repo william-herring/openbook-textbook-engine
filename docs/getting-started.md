@@ -1,6 +1,9 @@
 # Getting started
 To get started contributing to a textbook, first [install the CLI](#install-the-cli) and [clone an existing textbook](#clone-an-existing-textbook). Then, refer to the [Authors' guide]().
 ## Install the CLI
+```
+pip install openbook-textbook-engine
+```
 ## Clone an existing textbook
 Any textbook repository can be accessed from the Openbook site
 1. On Openbook, go to Library and scroll down to the "All VCE" section
@@ -29,3 +32,5 @@ Any textbook repository can be accessed from the Openbook site
   }
 }
 ```
+## Build the HTML output
+Run the command ```ote build``` inside the **textbook directory**.
