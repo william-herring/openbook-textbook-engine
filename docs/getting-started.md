@@ -1,5 +1,5 @@
 # Getting started
-To get started contributing to a textbook, first [install the CLI](#install-the-cli) and [clone an existing textbook](#clone-an-existing-textbook). Then, refer to the [Authors' guide]().
+To get started contributing to a textbook, first [install the CLI](#install-the-cli) and [clone an existing textbook](#clone-an-existing-textbook).
 ## Install the CLI
 ```
 pip install openbook-textbook-engine
@@ -34,3 +34,10 @@ Any textbook repository can be accessed from the Openbook site
 ```
 ## Build the HTML output
 Run the command ```ote build``` inside the **textbook directory**.
+## Upload textbook
+To submit a new textbook for approval on Openbook, first go to the Uploads Centre (this can be accessed from the sidebar as shown below).
+
+https://github.com/user-attachments/assets/58bf5b9d-2a31-4d59-aa2e-a1aab096869b
+
+Then, paste a link in the text field to a GitHub repository containing the textbook. Make sure you have configured a branch called 'release', because that's the one that Openbook looks for. Submit the textbook and then wait for an admin to either approve it or decline it.
+
