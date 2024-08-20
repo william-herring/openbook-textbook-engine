@@ -6,6 +6,7 @@ import shutil
 from pathlib import Path
 
 from .exports import build_html
+import xmltodict
 
 app = typer.Typer()
 __version__ = "0.1.4"
@@ -42,7 +43,8 @@ def build(outdir=Path(os.getcwd()) / 'out'):
     except FileNotFoundError:
         try:
             with open(Path(os.getcwd()) / 'options.xml', 'r') as file:
-                pass
+                options = xmltodict.parse(file)
+                print(options)
         except FileNotFoundError:
             raise Exception('Cannot locate options file. Ensure the command is executed from the project directory.')
 
