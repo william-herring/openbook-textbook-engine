@@ -5,7 +5,7 @@ import os
 import shutil
 from pathlib import Path
 
-from .exports import build_html
+from exports import build_html
 import xmltodict
 
 app = typer.Typer()
@@ -43,8 +43,10 @@ def build(outdir=Path(os.getcwd()) / 'out'):
     except FileNotFoundError:
         try:
             with open(Path(os.getcwd()) / 'options.xml', 'r') as file:
-                options = xmltodict.parse(file)
-                print(options)
+                options = xmltodict.parse(file.read())['root']
+                options['book']['page_numbers']['book/pre-content.md'] = options['book']['page_numbers']['pre-content.md']
+                build_html(options, Path(os.getcwd()), outdir)
+                return
         except FileNotFoundError:
             raise Exception('Cannot locate options file. Ensure the command is executed from the project directory.')
 
