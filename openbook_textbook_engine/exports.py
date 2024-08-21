@@ -11,27 +11,39 @@ import glob
 def build_html(options, workingdir, outdir):
     # Check embeds
     def replace_embeds(html_in: str):
+        """
+        Search through a HTML string for Openbook embed symbols and replace with
+        a HTML embed element
+        :param html_in:
+        :return:
+        """
         embed_pattern = re.compile(r"\[\[embed\([^)]*\)\]\]", re.IGNORECASE)
         html_out = html_in
         for e in re.findall(embed_pattern, html_out):
-            link = e[8:-3]
-            html_out = html_out.replace(e, f'<br><iframe src={link}></iframe></br')
+            link = e[8:-3]  # Slice the embed to extract the link
+            html_out = html_out.replace(e, f'<br><iframe src={link}></iframe></br')  # Format HTML
 
         return html_out
 
     def find_questions(md_in: str):
+        """
+        Search through a Markdown string for Openbook questions and add to a questions-answers map
+        :param md_in:
+        :return:
+        """
         question_pattern = re.compile(r'\[\[question\]\].*?\[\[answers\(".*?"\)\]\]', re.IGNORECASE)
         questions_map = {}
         md_out = md_in
 
         for q in re.findall(question_pattern, md_in):
-            answers = [a.strip().replace('"', '').replace("'", '') for a in q.split('[[answers(')[1][:-3].split(',')]
-            question = q.split('[[question]]')[1].split('[[answers')[0]
+            answers = [a.strip().replace('"', '').replace("'", '') for a in q.split('[[answers(')[1][:-3].split(',')]  # Parse the match to extract answers
+            question = q.split('[[question]]')[1].split('[[answers')[0]  # Extract question content
             md_out = md_out.replace(q, question)
             questions_map[question] = answers
 
         return md_out, questions_map
 
+    # Globals
     title = options['metadata']['title']
     pages_numbers_options = options['book']['page_numbers']
     book = workingdir / 'book'
@@ -51,15 +63,18 @@ def build_html(options, workingdir, outdir):
     page_number = 1
     # Pre-content
     with open(book / 'pre-content.md', 'r') as file:
-        pages = file.read().split("[[pg]]")
+        pages = file.read().split("[[pg]]")  # Split the chapter into its individual pages
         for page in pages:
+            # Replace symbols
             html = markdown.markdown(page, output_format='html')
             html = replace_embeds(html)
 
             for header in re.findall(r'#{1,6}\s*.+', page):
+                # Add chapter heading markers to chapters dict
                 chapters.append((header, roman_numerals[page_index] if pages_numbers_options['book/' + 'pre-content.md'] == 'roman' else str(page_number), page_index))
 
             out = open(Path(outdir) / 'html' / f'{page_index}.html', 'w')
+            # Build HTML
             if pages_numbers_options['book/' + 'pre-content.md'] == 'roman':
                 p = f"<html><style>{styles}</style><body><div id='page-content' class='page'>{html}<div class='page-number'><p>{roman_numerals[page_index]}</p></div></div></body></html>"
                 pages_html.append(p)
@@ -80,12 +95,14 @@ def build_html(options, workingdir, outdir):
         with open(book / 'chapters' / chapter) as file:
             pages = file.read().split("[[pg]]")
             for page in pages:
+                # Find questions and add to map
                 processed_questions = find_questions(page)
                 questions = {**questions, **processed_questions[1]}
                 html = markdown.markdown(processed_questions[0], output_format='html')
-                html = replace_embeds(html)
+                html = replace_embeds(html)  # Replace embeds
 
                 for header in re.findall(r'#{1,6}\s*.+', page):
+                    # Add chapter headings to chapters dict
                     chapters.append((header, str(page_number), page_index))
 
                 out = open(Path(outdir) / 'html' / f'{page_index}.html', 'w')
@@ -121,6 +138,7 @@ def build_html(options, workingdir, outdir):
         f2.truncate()
         f2.close()
 
+    # Create a data file to contain build information
     with open(Path(outdir) / 'data.json', 'w') as file:
         data = {
             'pages': page_number,
